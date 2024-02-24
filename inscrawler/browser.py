@@ -1,5 +1,8 @@
 import os
 
+import chromedriver_autoinstaller as chromedriver
+chromedriver.install()
+
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -15,7 +18,6 @@ from fake_useragent import UserAgent
 
 class Browser:
     def __init__(self, has_screen):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
         service_args = ["--ignore-ssl-errors=true"]
         chrome_options = Options()
         if not has_screen:
@@ -23,8 +25,10 @@ class Browser:
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("user-agent="+UserAgent().random)
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        chrome_options.add_argument("--silent");
+        chrome_options.add_argument("--log-level=3");
         self.driver = webdriver.Chrome(
-            executable_path="%s/bin/chromedriver" % dir_path,
             service_args=service_args,
             chrome_options=chrome_options,
         )
